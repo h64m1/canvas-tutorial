@@ -15,11 +15,11 @@
 					// ctx.clearRect(45, 45, 60, 60)
 					// ctx.strokeRect(50, 50, 50, 50)
 
-					ctx.beginPath()
-					ctx.moveTo(175, 100)
-					ctx.lineTo(200, 125)
-					ctx.lineTo(200, 75)
-					ctx.fill()
+					// ctx.beginPath()
+					// ctx.moveTo(175, 100)
+					// ctx.lineTo(200, 125)
+					// ctx.lineTo(200, 75)
+					// ctx.fill()
 
 					// ctx.beginPath()
 					// ctx.arc(75, 75, 50, 0, Math.PI * 2, true) // Outer circle
@@ -58,15 +58,29 @@
 					// ctx.stroke()
 
 					// Cubic curves example
-					ctx.beginPath()
-					ctx.moveTo(75, 40)
-					ctx.bezierCurveTo(75, 37, 70, 25, 50, 25)
-					ctx.bezierCurveTo(20, 25, 20, 62.5, 20, 62.5)
-					ctx.bezierCurveTo(20, 80, 40, 102, 75, 120)
-					ctx.bezierCurveTo(110, 102, 130, 80, 130, 62.5)
-					ctx.bezierCurveTo(130, 62.5, 130, 25, 100, 25)
-					ctx.bezierCurveTo(85, 25, 75, 37, 75, 40)
-					ctx.fill()
+					// ctx.beginPath()
+					// ctx.moveTo(75, 40)
+					// ctx.bezierCurveTo(75, 37, 70, 25, 50, 25)
+					// ctx.bezierCurveTo(20, 25, 20, 62.5, 20, 62.5)
+					// ctx.bezierCurveTo(20, 80, 40, 102, 75, 120)
+					// ctx.bezierCurveTo(110, 102, 130, 80, 130, 62.5)
+					// ctx.bezierCurveTo(130, 62.5, 130, 25, 100, 25)
+					// ctx.bezierCurveTo(85, 25, 75, 37, 75, 40)
+					// ctx.fill()
+
+					// path2d example
+					const rectangle = new Path2D()
+					rectangle.rect(10, 10, 50, 50)
+
+					const circle = new Path2D()
+					circle.arc(100, 35, 25, 0, 2 * Math.PI)
+
+					// using SVG paths
+					const p = new Path2D('M10 10 h 80 v 80 h -80 Z');
+
+					ctx.stroke(rectangle)
+					ctx.fill(circle)
+					ctx.stroke(p)
 				} else {
 					// canvas-unsupported code here
 				}
