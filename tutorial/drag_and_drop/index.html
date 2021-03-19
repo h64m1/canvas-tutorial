@@ -9,6 +9,7 @@
 				if (canvas.getContext) {
 					// drawing code here
 					const ctx = canvas.getContext('2d')
+					ctx.font = '25px arial'
 
 					let initW = 50
 					let initH = 50
@@ -16,23 +17,42 @@
 					let initY = 100
 
 					let isDrag = false
-					let w = initW
-					let h = initH
-					let x = initX
-					let y = initY
-					let relX = 0
-					let relY = 0
-					ctx.fillRect(x, y, w, h)
+					let target = -1
+					let w = [initW, 0]
+					let h = [initH, parseInt(ctx.font)]
+
+					let x = [initX, initX + 2 * initW]
+					let y = [initY, initX + 2 * initH]
+					let relX = [0, 0]
+					let relY = [0, 0]
+					ctx.fillRect(x[0], y[0], w[0], h[0])
+
+					ctx.beginPath()
+					const text = 'テスト'
+					// fillText start point is left bottom
+					ctx.fillText(text, x[1], y[1])
+					w[1] = ctx.measureText(text).width
 
 					function onDown(e) {
 						const _x = e.clientX - canvas.offsetLeft
 						const _y = e.clientY - canvas.offsetTop
 
-						if ( _x >= x && _x <= x + w && _y >= y && _y <= y + h) {
-							isDrag = true
-							relX = x - _x
-							relY = y - _y
-							console.debug('drag start', _x, _y, 'rel', relX, relY)
+						for (let i = 0; i < 2; i++) {
+							const minY = i === 0 ? y[i] : y[i] - h[i]
+							const maxY = i === 0 ? y[i] + h[i] : y[i]
+
+							if (
+								_x >= x[i] &&
+								_x <= x[i] + w[i] &&
+								_y >= minY &&
+								_y <= maxY
+							) {
+								isDrag = true
+								target = i
+								relX[i] = x[i] - _x
+								relY[i] = y[i] - _y
+								console.debug('drag start', i, _x, _y, 'rel', relX, relY)
+							}
 						}
 					}
 
@@ -45,12 +65,18 @@
 							return
 						}
 
-						x = _x + relX
-						y = _y + relY
+						x[target] = _x + relX[target]
+						y[target] = _y + relY[target]
 
 						// clear canvas
 						ctx.clearRect(0, 0, canvas.width, canvas.height)
-						ctx.fillRect(x, y, w, h)
+						for (let i = 0; i < 2; i++) {
+							if (i === 0) {
+								ctx.fillRect(x[i], y[i], w[i], h[i])
+							} else {
+								ctx.fillText(text, x[i], y[i])
+							}
+						}
 					}
 
 					function onUp(e) {
@@ -84,6 +110,8 @@
 		<!-- Providing fallback content is very straightforward: just insert the alternate content inside the <canvas> element. -->
 		<!-- Browsers that don't support <canvas> will ignore the container and render the fallback content inside it. -->
 		<!-- Browsers that do support <canvas> will ignore the content inside the container, and just render the canvas normally. -->
-		<canvas id="drag-drop" width="1000" height="1000"> canvas tutorial </canvas>
+		<canvas id="drag-drop" width="1000" height="1000">
+			canvas tutorial
+		</canvas>
 	</body>
 </html>
