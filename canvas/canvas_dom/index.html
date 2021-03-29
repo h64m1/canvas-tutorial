@@ -6,12 +6,13 @@
 		<script type="text/javascript">
 			function draw() {
 				const canvas = document.getElementById('drag-drop')
+				let textarea = null
 				if (canvas.getContext) {
 					// drawing code here
 					const ctx = canvas.getContext('2d')
 					ctx.font = '25px arial'
 
-					let initW = 50
+					let initW = 100
 					let initH = 50
 					let initX = 100
 					let initY = 100
@@ -51,7 +52,15 @@
 								target = i
 								relX[i] = x[i] - _x
 								relY[i] = y[i] - _y
-								console.debug('drag start', i, _x, _y, 'rel', relX, relY)
+								console.debug(
+									'drag start',
+									i,
+									_x,
+									_y,
+									'rel',
+									relX,
+									relY,
+								)
 							}
 						}
 					}
@@ -89,10 +98,42 @@
 						console.debug('out: drag stop', x, y)
 					}
 
-					canvas.addEventListener('mousedown', onDown, false)
-					canvas.addEventListener('mousemove', onMove, false)
-					canvas.addEventListener('mouseup', onUp, false)
-					canvas.addEventListener('mouseout', onOut, false)
+					// canvas.addEventListener('mousedown', onDown, false)
+					// canvas.addEventListener('mousemove', onMove, false)
+					// canvas.addEventListener('mouseup', onUp, false)
+					// canvas.addEventListener('mouseout', onOut, false)
+
+
+					function mouseDownOnTextarea(e) {
+						const x = textarea.offsetLeft - e.clientX
+						const y = textarea.offsetTop - e.clientY
+						function drag(e) {
+							textarea.style.left = e.clientX + x + 'px'
+							textarea.style.top = e.clientY + y + 'px'
+						}
+						function stopDrag() {
+							document.removeEventListener('mousemove', drag)
+							document.removeEventListener('mouseup', stopDrag)
+						}
+						document.addEventListener('mousemove', drag)
+						document.addEventListener('mouseup', stopDrag)
+					}
+					canvas.addEventListener('click', (e) => {
+						if (!textarea) {
+							textarea = document.createElement('textarea')
+							textarea.className = 'info'
+							textarea.addEventListener(
+								'mousedown',
+								mouseDownOnTextarea,
+							)
+							document.body.appendChild(textarea)
+						}
+						const x = e.clientX - canvas.offsetLeft
+						const y = e.clientY - canvas.offsetTop
+						textarea.value = 'x: ' + x + ' y: ' + y
+						textarea.style.top = e.clientY + 'px'
+						textarea.style.left = e.clientX + 'px'
+					}, false)
 				} else {
 					// canvas-unsupported code here
 				}
@@ -101,6 +142,9 @@
 		<style type="text/css">
 			canvas {
 				border: 1px solid black;
+			}
+			.info {
+				position: absolute;
 			}
 		</style>
 	</head>
